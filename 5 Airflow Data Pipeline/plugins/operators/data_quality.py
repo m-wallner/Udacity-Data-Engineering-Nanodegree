@@ -7,18 +7,25 @@ class DataQualityOperator(BaseOperator):
     ui_color = '#89DA59'
 
     @apply_defaults
-    def __init__(self, redshift_conn_id='', tables=[], *args, **kwargs):
+    def __init__(self, redshift_conn_id='', checks=[], *args, **kwargs):
         super(DataQualityOperator, self).__init__(*args, **kwargs)
         self.conn_id = redshift_conn_id
-        self.tables = tables
-
+        self.checks = checks
+            
     def execute(self, context):
         redshift_hook = PostgresHook(self.conn_id)
-        for table in self.tables:
-            records = redshift_hook.get_records(f'SELECT COUNT(*) FROM {table}')
-            if len(records) < 1 or len(records[0]) < 1:
-                raise ValueError(f'Data quality check failed. {table} returned no results.')
-            num_rec = records[0][0]
-            if num_rec < 1:
-                raise ValueError(f'Data quality check failed. {table} contained 0 rows.')
-            self.log.info(f'Data quality on table {table} check passed with {num_rec} records.')
+        for check in self.checks:
+            result = int(redshift_hook.get_first(sql=check['sql'])[0])
+            # check if equal
+            if check['op'] == 'eq':
+                if result != check['val']:
+                    raise AssertionError(f"Check failed: {result} {check['op']} {check['val']}")
+            # check if not equal
+            elif check['op'] == 'ne':
+                if result == check['val']:
+                    raise AssertionError(f"Check failed: {result} {check['op']} {check['val']}")
+            # check if greater than
+            elif check['op'] == 'gt':
+                if result <= check['val']:
+                    raise AssertionError(f"Check failed: {result} {check['op']} {check['val']}")
+            self.log.info(f"Passed check: {result} {check['op']} {check['val']}")
