@@ -18,14 +18,19 @@ class StageToRedshiftOperator(BaseOperator):
 
     def execute(self, context):
         aws_hook = AwsHook(self.aws_credentials_id)
+        
+        self.log.info('Retrieving AWS credentials.')
         credentials = aws_hook.get_credentials()
         
         redshift = PostgresHook(postgres_conn_id=self.conn_id)
+        
+        self.log.info('Deleting data from destination Redshift table.')
         redshift.run(f"DELETE FROM {self.table}")
         
         self.s3_key = self.s3_key.format(**context)
         s3_path = f's3://{self.s3_bucket}/{self.s3_key}'
         
+        self.log.info('Copying data from S3.')
         redshift.run(
             f"COPY {self.table} FROM '{s3_path}'\
                 ACCESS_KEY_ID '{credentials.access_key}' \
