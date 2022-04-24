@@ -95,11 +95,25 @@ load_time_dimension_table = LoadDimensionOperator(
     truncate=True
 )
 
+checks = [
+    {
+        'sql': 'SELECT COUNT(*) FROM songplays;',
+        'op': 'gt',
+        'val': 0
+    },
+    {
+        'sql': 'SELECT COUNT(*) FROM songplays WHERE songid IS NULL;',
+        'op': 'eq',
+        'val': 0
+    }
+]
+
 run_quality_checks = DataQualityOperator(
     task_id='Run_data_quality_checks',
     dag=dag,
     redshift_conn_id='redshift',
-    tables=['songplay', 'users', 'song', 'artist', 'time']
+    tables=['songplay', 'users', 'song', 'artist', 'time'],
+    checks=checks
 )
 
 end_operator = DummyOperator(task_id='Stop_execution',  dag=dag)
