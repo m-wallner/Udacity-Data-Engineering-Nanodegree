@@ -37,9 +37,89 @@ This is a simple table of airport codes and corresponding cities.
 
 A star schema is used for data modeling.
 
+### 3.1 Tables
+
 | Table name | Columns | Description | Table type |
 | ------- | ---------- | ----------- | ---- |
 | immigration | cicid - year - month - cit - res - iata - arrdate - mode - addr - depdate - bir - visa - coun- dtadfil -  entdepa - entdepd - entdepu - matflag - biryear - dtaddto - gender - airline - admnum - fltno - visatype | I94 immigrations data | Fact table |
 | airports | iata_code - name - type - local_code - coordinates - city | Information related to airports | Dimension table |
 | demographics | city - state - media_age - male_population - female_population - total_population - num_veterans - foreign_born - average_household_size - state_code - race - count | Demographics data for cities | Dimension table |
 | temperature | timestamp - average_temperature - average_temperatur_uncertainty - city - country - latitude - longitude | Temperature information | Dimension table |
+
+### 3.2 Data Dictionary
+
+**Facts table "immigration"**:
+
+| Columns | Description |
+| ------- | ---------- |
+| cicid | INT PRIMARY KEY |
+| year | INT |
+| month | INT |
+| cit | INT |
+| res | INT |
+| iata | VARCHAR, FK airports |
+| arrdate | INT |
+| mode | INT |
+| addr | VARCHAR |
+| depdate | INT |
+| bir | FLOAT |
+| visa | FLOAT |
+| count | FLOAT |
+| dtadfile | VARCHAR |
+| entdepa | VARCHAR |
+| entdepd | VARCHAR |
+| matflag | VARCHAR |
+| biryear | FLOAT |
+| dtaddto | VARCHAR |
+| gender | VARCHAR |
+| airline | VARCHAR |
+| admnum | FLOAT |
+| fltno | VARCHAR |
+| visatype | VARCHAR |
+| city | VARCHAR, FK demographics, FK temperature |
+
+**Dimensions table "airports"**:
+
+| Columns | Description |
+| ------- | ---------- |
+| iata_code | VARCHAR PRIMARY KEY |
+| name | VARCHAR |
+| type | VARCHAR |
+| local_code | VARCHAR |
+| coordinates | VARCHAR |
+| city | VARCHAR |
+| elevation_ft | FLOAT |
+| continent | VARCHAR |
+| iso_country | VARCHAR |
+| iso_region | VARCHAR |
+| municipality | VARCHAR |
+| gps_code | VARCHAR |
+
+**Dimensions table "demographics"**:
+
+| Columns | Description |
+| ------- | ---------- |
+| city | VARCHAR PRIMARY KEY |
+| state | VARCHAR |
+| media_age | FLOAT |
+| male_population | INT |
+| female_population | INT |
+| total_population | INT |
+| num_veterans | INT |
+| foreign_born | INT |
+| average_household_size | FLOAT |
+| state_code | VARCHAR |
+| race | VARCHAR |
+| count | INT |
+
+**Dimensions table "temperature"**:
+
+| Columns | Description |
+| ------- | ---------- |
+| city | VARCHAR PRIMARY KEY |
+| timestamp | DATE |
+| avg_temperature | FLOAT |
+| avg_temperature_uncertainty | FLOAT |
+| country | VARCHAR |
+| latitude | VARCHAR |
+| longitude | VARCHAR |
