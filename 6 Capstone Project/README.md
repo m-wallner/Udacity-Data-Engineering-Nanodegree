@@ -1,6 +1,8 @@
 # CapstoneProject: Enriching US Immigration Data with Further Data Sources
 
-This project's goal is to further enrich US I94 immigration data with airports, temperature and demographics data for have a broader data spectrum for analysis. The complete process is laid out in the Jupyter notebook "Capstone Project.ipynb".
+This project's goal is to further enrich US I94 immigration data with airports, temperature and demographics data for have a broader data spectrum for analysis. For example, the enrichment of immigration data with temperature attributes enables us to analyze if there is a correlation between immigration inflow and temperature.
+
+The complete process is laid out in the Jupyter notebook "Capstone Project.ipynb".
 
 ## 1 Data Sources
 
